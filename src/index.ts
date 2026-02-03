@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import { MegaverseAPI } from './services/MegaverseAPI.js';
 import { EntityFactory } from './core/EntityFactory.js';
 import { BaseEntity } from './core/BaseEntity.js';
@@ -126,6 +128,7 @@ async function solveChallenge() {
     if (!isGoalMapValid(goalMap)) {
         console.error('Warning: The Goal Map contains invalid Soloon placements!');
         console.error('   Soloons must be adjacent to a Polyanet.');
+        process.exit(1);
     }
 
   api.printMap(currentMap); 

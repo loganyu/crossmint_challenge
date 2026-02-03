@@ -7,7 +7,7 @@
     "start": "tsx src/index.ts solve",
     "current": "tsx src/index.ts current",
     "goal": "tsx src/index.ts goal",
-    "create": "tsx src/index.ts create", 
+    "create": "tsx src/index.ts create",
     "delete": "tsx src/index.ts delete",
     "reset": "tsx src/index.ts reset"
   },
@@ -19,5 +19,8 @@
     "@types/node": "^25.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
   }
 }

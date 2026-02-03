@@ -2,8 +2,18 @@ import { BaseEntity } from '../core/BaseEntity.js';
 import type { MegaverseMap, MapCell } from '../types/index.js';
 
 export class MegaverseAPI {
-  private candidateId = '9f4a8cb3-13ce-4552-a62d-bf8ec1a15f83';
+  private candidateId: string;
   private baseUrl = 'https://challenge.crossmint.io/api';
+
+  constructor() {
+    const id = process.env.CANDIDATE_ID;
+    
+    if (!id) {
+      throw new Error('CANDIDATE_ID is missing from .env file');
+    }
+    
+    this.candidateId = id;
+  }
 
   async getCurrentMap(): Promise<MegaverseMap> {
     const response = await fetch(`${this.baseUrl}/map/${this.candidateId}`);
