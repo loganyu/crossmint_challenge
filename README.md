@@ -42,4 +42,5 @@ CANDIDATE_ID=candidate-id-here
 `npm run reset`
 
 ## Assumptions and Design Decisions
-* the validation step, `isGoalMapValid`, checks that Soloons are only adjacent to a Polyanet. However, I left out the logic to do this. the backend does not enforce this validation step. 
+* the validation step, `isGoalMapValid`, checks that Soloons are only adjacent to a Polyanet and does not run if the goal map is invalid. However, the backend does not enforce this validation step. If I had access to the backend, I would add validations for this logic. Note that the functions for manual creation and deletion of entities do not validate this since I created them for debugging. If the individual creation steps were to be used, I would validate this rule because making an API request.
+* The API allows setting direction and color to any string or number. When reading the map, they are treated as "unknown" values
