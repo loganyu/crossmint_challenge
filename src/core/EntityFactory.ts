@@ -8,22 +8,27 @@ export class EntityFactory {
     static createFromGoalString(row: number, col: number, cellStr: string): BaseEntity | null {
         if (!cellStr || cellStr === 'SPACE') return null;
 
-        const upperStr = cellStr.toUpperCase();
+    // cellStr Examples: "POLYANET", "RIGHT_COMETH", "BLUE_SOLOON"
+    const parts = cellStr.split('_');
+    const type = parts[parts.length - 1]; // Always the last part
+    const modifier = parts.length > 1 ? parts[0].toLowerCase() : undefined; // First part if exists
 
-        // 2. Direct matching for Phase 1 (and fallback for Phase 2)
-        if (upperStr.includes('POLYANET')) {
-            return new Polyanet(row, col);
-        }
-
-        if (upperStr.includes('SOLOON')) {
-            return new Soloon(row, col); 
-        }
-
-        if (upperStr.includes('COMETH')) {
-            return new Cometh(row, col);
-        }
-
-        console.warn(`⚠️ Unknown entity type in Goal Map: ${cellStr}`);
-        return null;
+    if (type === 'POLYANET') {
+      return new Polyanet(row, col);
     }
+
+    if (type === 'SOLOON') {
+      // Default to blue if parsing fails, but modifier should be there
+      return new Soloon(row, col, (modifier as SoloonColor) || 'blue');
+    }
+
+    if (type === 'COMETH') {
+      // Default to up if parsing fails
+      return new Cometh(row, col, (modifier as ComethDirection) || 'up');
+    }
+
+    console.warn(`⚠Unknown entity type in Goal Map: ${cellStr}`);
+
+    return null;
+  }
 }

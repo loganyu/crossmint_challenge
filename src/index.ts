@@ -100,7 +100,7 @@ async function deleteManual() {
 }
 
 async function resetMap() {
-  console.log('⚠️ DELETING EVERYTHING...');
+  console.log('Deleting map');
   const map = await api.getCurrentMap();
   
   for (let row = 0; row < map.content.length; row++) {
@@ -116,11 +116,17 @@ async function resetMap() {
 }
 
 async function solveChallenge() {
-  console.log('📡 Fetching maps...');
+  console.log('Fetching maps...');
   const [goalMap, currentMap] = await Promise.all([
     api.getGoalMap(),
     api.getCurrentMap()
   ]);
+
+  console.log('Validating Goal Map logic...');
+    if (!isGoalMapValid(goalMap)) {
+        console.error('Warning: The Goal Map contains invalid Soloon placements!');
+        console.error('   Soloons must be adjacent to a Polyanet.');
+    }
 
   api.printMap(currentMap); 
 
@@ -158,12 +164,12 @@ async function solveChallenge() {
   console.log(`   - ${toCreate.length} entities to CREATE (Overwriting/New).`);
 
   if (toDelete.length === 0 && toCreate.length === 0) {
-    console.log('🎉 Map is already perfect!');
+    console.log('No changes needed to map...');
     return;
   }
 
   if (toDelete.length > 0) {
-    console.log(`\n🗑️  Clearing ${toDelete.length} spaces...`);
+    console.log(`\nClearing ${toDelete.length} spaces...`);
     for (const [i, item] of toDelete.entries()) {
         process.stdout.write(`\r[${i + 1}/${toDelete.length}] Deleting type ${item.type} at (${item.row}, ${item.col})  `);
         await api.deleteEntity(item.row, item.col, item.type);
@@ -172,7 +178,7 @@ async function solveChallenge() {
   }
 
   if (toCreate.length > 0) {
-    console.log(`\n🚀 Creating ${toCreate.length} new entities...`);
+    console.log(`\nCreating ${toCreate.length} new entities...`);
     for (const [i, entity] of toCreate.entries()) {
         process.stdout.write(`\r[${i + 1}/${toCreate.length}] Creating ${entity.getSymbol()} at (${entity.row}, ${entity.col})  `);
         await api.createEntity(entity);
@@ -180,9 +186,41 @@ async function solveChallenge() {
     }
   }
 
-  console.log('\n\n✨ Verifying final result...');
+  console.log('\n\nVerifying final result...');
   const finalMap = await api.getCurrentMap();
   api.printMap(finalMap);
+}
+
+function isGoalMapValid(goal: string[][]): boolean {
+  const rows = goal.length;
+  const cols = goal[0].length;
+  let isValid = true;
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = goal[r][c];
+      
+      // We only care about checking Soloons
+      if (!cell.includes('SOLOON')) continue;
+
+      // Check 4 neighbors (Up, Down, Left, Right)
+      const neighbors = [
+        goal[r - 1]?.[c], // Up
+        goal[r + 1]?.[c], // Down
+        goal[r]?.[c - 1], // Left
+        goal[r]?.[c + 1]  // Right
+      ];
+
+      // Does at least one neighbor contain 'POLYANET'?
+      const hasPolyanet = neighbors.some(n => n && n.includes('POLYANET'));
+
+      if (!hasPolyanet) {
+        console.warn(`⚠️ Invalid Soloon at (${r}, ${c}): No adjacent Polyanet found.`);
+        isValid = false;
+      }
+    }
+  }
+  return isValid;
 }
 
 main();

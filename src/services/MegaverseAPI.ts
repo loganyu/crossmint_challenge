@@ -91,7 +91,7 @@ export class MegaverseAPI {
   }
   
   private parseMapCell(cell: MapCell): string {
-    if (!cell) return '🌑'; 
+    if (!cell) return '🌌'; 
     if (cell.type === 0) return '🪐'; 
     if (cell.type === 1) {
       if (typeof cell.color !== 'string') return '❔';
