@@ -4,12 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsx src/index.ts solve",
+    "current": "tsx src/index.ts current",
+    "goal": "tsx src/index.ts goal",
+    "create": "tsx src/index.ts create", 
+    "delete": "tsx src/index.ts delete",
+    "reset": "tsx src/index.ts reset"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
     "@types/node": "^25.2.0",
     "tsx": "^4.21.0",
